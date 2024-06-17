@@ -4,6 +4,8 @@ import arrow from '../../assets/images/icons/arrow.svg';
 import edit from '../../assets/images/icons/edit.svg';
 import trash from '../../assets/images/icons/trash.svg';
 
+import { Link } from 'react-router-dom';
+
 export default function Home() {
   return (
     <Container>
@@ -15,7 +17,7 @@ export default function Home() {
       <Header>
         <strong>3 contatos</strong>
 
-        <a href='/'>Novo contato</a>
+        <Link to='/new'>Novo contato</Link>
 
       </Header>
 
@@ -44,65 +46,9 @@ export default function Home() {
           </div>
 
           <div className='actions'>
-            <a>
+            <Link to='/edit/123'>
               <img src={edit} alt='Edit'/>
-            </a>
-
-            <button type='button'>
-              <img src={trash} alt='Delete'/>
-
-            </button>
-
-          </div>
-
-        </Card>
-
-        <Card>
-          <div className='info'>
-            <div className='contact-name'>
-              <strong>Bruno Silva</strong>
-
-              <small>instagram</small>
-
-            </div>
-
-            <span>brunosilva@gmail.com</span>
-            <span>(28) 99952-2013</span>
-
-          </div>
-
-          <div className='actions'>
-            <a>
-              <img src={edit} alt='Edit'/>
-            </a>
-
-            <button type='button'>
-              <img src={trash} alt='Delete'/>
-
-            </button>
-
-          </div>
-
-        </Card>
-
-        <Card>
-          <div className='info'>
-            <div className='contact-name'>
-              <strong>Bruno Silva</strong>
-
-              <small>instagram</small>
-
-            </div>
-
-            <span>brunosilva@gmail.com</span>
-            <span>(28) 99952-2013</span>
-
-          </div>
-
-          <div className='actions'>
-            <a>
-              <img src={edit} alt='Edit'/>
-            </a>
+            </Link>
 
             <button type='button'>
               <img src={trash} alt='Delete'/>
