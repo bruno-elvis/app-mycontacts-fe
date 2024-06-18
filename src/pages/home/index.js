@@ -5,12 +5,16 @@ import edit from '../../assets/images/icons/edit.svg';
 import trash from '../../assets/images/icons/trash.svg';
 
 import { Link } from 'react-router-dom';
-import Modal from '../../components/Modal';
+import Loader from '../../components/Loader';
+// import Modal from '../../components/Modal';
+
 
 export default function Home() {
   return (
     <Container>
-      <Modal title={'Teste modal'} body={'Texto de texte para o corpo do modal'} textButton='Deletar' danger/>
+      <Loader />
+
+      {/* <Modal title={'Teste modal'} body={'Texto de texte para o corpo do modal'} textButton='Deletar' danger/> */}
 
       <InputSearchContainer>
         <input type='text' placeholder='Pesquise pelo nome'/>

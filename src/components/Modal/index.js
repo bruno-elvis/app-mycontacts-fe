@@ -1,3 +1,5 @@
+import { createPortal } from 'react-dom';
+
 import PropTypes from 'prop-types';
 
 import { Container, Overlay, Footer } from './styles';
@@ -5,9 +7,8 @@ import { Container, Overlay, Footer } from './styles';
 import Button from '../Button';
 
 export default function Modal({ title, body, textButton, danger }) {
-  return (
-    <>
-      <Overlay>
+  return createPortal(
+    <Overlay>
         <Container danger={ danger }>
           <h1>
            { title }
@@ -34,9 +35,9 @@ export default function Modal({ title, body, textButton, danger }) {
 
         </Container>
 
-      </Overlay>
+      </Overlay>,
 
-    </>
+      document.getElementById('modal-root')
 
   );
 
