@@ -4,11 +4,11 @@ import { Container, Overlay, Footer } from './styles';
 
 import Button from '../Button';
 
-export default function Modal({ title, body, textButton }) {
+export default function Modal({ title, body, textButton, danger }) {
   return (
     <>
       <Overlay>
-        <Container>
+        <Container danger={ danger }>
           <h1>
            { title }
 
@@ -25,7 +25,7 @@ export default function Modal({ title, body, textButton }) {
 
             </button>
 
-            <Button type='button'>
+            <Button type='button' danger={ danger }>
               { textButton }
 
             </Button>
@@ -45,6 +45,12 @@ export default function Modal({ title, body, textButton }) {
 Modal.propTypes = {
   title: PropTypes.string.isRequired,
   body: PropTypes.string.isRequired,
-  textButton: PropTypes.string.isRequired
+  textButton: PropTypes.string.isRequired,
+  danger: PropTypes.bool
+
+};
+
+Modal.defaultProps = {
+  danger: false
 
 };

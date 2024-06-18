@@ -10,7 +10,7 @@ import Modal from '../../components/Modal';
 export default function Home() {
   return (
     <Container>
-      <Modal title={'Teste modal'} body={'Texto de texte para o corpo do modal'} textButton='Deletar'/>
+      <Modal title={'Teste modal'} body={'Texto de texte para o corpo do modal'} textButton='Deletar' danger/>
 
       <InputSearchContainer>
         <input type='text' placeholder='Pesquise pelo nome'/>
