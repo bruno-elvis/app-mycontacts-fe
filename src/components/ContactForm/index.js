@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 
 import isEmailValid from '../../utils/isEmailValid';
+import formatPhone from '../../utils/formatPhone';
 
 import FormGroup from '../FormGroup';
 import Input from '../Input';
@@ -51,6 +52,13 @@ export default function ContactForm({ buttonLabel }) {
 
   };
 
+  function handlePhoneChange(e) {
+    const inputValue = e.target.value;
+
+    setPhone(formatPhone({ phoneNumber: inputValue }));
+
+  };
+
   function handleSubmit(e) {
     e.preventDefault();
 
@@ -67,6 +75,7 @@ export default function ContactForm({ buttonLabel }) {
         <FormGroup error={ getErrorMessageByFieldName({ fieldName: 'name'}) }>
           <Input
             placeholder='Nome'
+            value={ name }
             onChange={ handleNameChange }
             error={ getErrorMessageByFieldName({ fieldName: 'name'}) } />
 
@@ -75,6 +84,7 @@ export default function ContactForm({ buttonLabel }) {
         <FormGroup error={ getErrorMessageByFieldName({ fieldName: 'email'}) }>
           <Input
             type='email'
+            value={ email }
             placeholder='E-mail'
             onChange={ handleEmailChange }
             error={ getErrorMessageByFieldName({ fieldName: 'email'}) } />
@@ -82,16 +92,23 @@ export default function ContactForm({ buttonLabel }) {
         </FormGroup>
 
         <FormGroup>
-          <Input placeholder='Telefone' onChange={ e => setPhone(e.target.value) }/>
+          <Input
+            placeholder='Telefone'
+            value={ phone }
+            onChange={ handlePhoneChange }
+            maxLength='15' />
 
         </FormGroup>
 
         <FormGroup>
-          <Select onChange={ e => setCategory(e.target.value) }>
+          <Select
+            onChange={ e => setCategory(e.target.value) }
+            value={ category } >
             <option value=''>Categoria</option>
             <option value='linkedin'>LinkedIn</option>
             <option value='instagram'>Instagram</option>
             <option value='facebook'>Facebook</option>
+
           </Select>
 
         </FormGroup>
