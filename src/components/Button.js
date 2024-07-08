@@ -23,7 +23,7 @@ export default styled.button`
   }
 
   &[disabled] {
-    background: '#CCC';
+    background: rgb(204, 204, 204);
     cursor: default;
 
   }
