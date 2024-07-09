@@ -2,16 +2,23 @@
   "env": {
      "browser": true,
      "es2021": true
+
   },
 
   "extends": [
     "eslint:recommended",
-    "plugin:react/recommended"
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended"
+    //"plugin:stylelint/config-standard",
+    //"plugin:@stylistic/recommended-extends"
+
   ],
 
   "parserOptions": {
      "ecmaVersion": 12,
+
      "sourceType": "module",
+
      "ecmaFeatures": {
       "jsx": true
     }
@@ -20,7 +27,9 @@
 
   "plugins": [
     "react",
-    "@stylistic/js"
+    "react-hooks"
+    //"@stylistic",
+
   ],
 
   "rules": {
@@ -28,17 +37,23 @@
 
     "react/jsx-filename-extension": [
       1,
+
       {
          "extensions": [".js", ".jsx"]
       }
 
     ],
 
-    "react/jsx-indent": "off",
+    //"react/jsx-indent": "off",
 
     "no-extra-semi": "off",
 
-    "react/no-deprecated": "off"
+    "react/no-deprecated": "off",
+
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn"
+
+    //"@stylistic/indent": ["error", 2]
 
   }
 
