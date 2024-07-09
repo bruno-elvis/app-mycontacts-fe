@@ -1,12 +1,12 @@
 import { Container, Header, ListContainer, Card, InputSearchContainer } from './styles';
+import Loader from '../../components/Loader';
 
 import arrow from '../../assets/images/icons/arrow.svg';
 import edit from '../../assets/images/icons/edit.svg';
 import trash from '../../assets/images/icons/trash.svg';
 
 import { Link } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-// import Loader from '../../components/Loader';
+import { useEffect, useMemo, useState } from 'react';
 // import Modal from '../../components/Modal';
 
 
@@ -14,36 +14,57 @@ export default function Home() {
   const [contacts, setContacts] = useState([]);
   const [orderBy, setOrderBy] = useState('asc');
   const [searchTerm, setSearchTerm] = useState('');
+  const [isloading, setIsLoading] = useState(true);
 
-  const filteredContacts = contacts.filter(
-    contact => contact.name.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
+  const filteredContacts = useMemo(
+    () => contacts.filter(
+      contact => contact.name.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
+    ),
+
+    [contacts, searchTerm]
 
   );
 
   useEffect(() => {
-    fetch (`http://localhost:3001/contacts?orden=${orderBy}`)
-    .then(async response => {
-      const json = await response.json();
+    setIsLoading(true);
 
-      setContacts(json);
+    async function loadContacts () {
+      try {
+        const response = await fetch (`http://localhost:3001/contacts?orden=${orderBy}`);
 
-    }).catch(error => console.log({ error: error }));
+        const json = await response.json();
+
+        setContacts(json);
+
+      } catch (error) {
+        console.log({ error: error });
+
+      } finally {
+        setIsLoading(false);
+
+      }
+
+
+
+    }
+
+    loadContacts();
 
   }, [orderBy]);
 
   function handleToggleOrderBy() {
     setOrderBy((prevstate) => prevstate === 'asc' ? 'desc' : 'asc');
 
-  };
+  }
 
   function handleChangeSearchTerm(event) {
     setSearchTerm(event.target.value);
 
-  };
+  }
 
   return (
     <Container>
-      {/* <Loader /> */}
+      <Loader isloading={ isloading }/>
 
       {/* <Modal title={'Teste modal'} body={'Texto de texte para o corpo do modal'} textButton='Deletar' danger/> */}
 
@@ -112,4 +133,4 @@ export default function Home() {
 
   );
 
-};
+}
