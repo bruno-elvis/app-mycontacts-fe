@@ -7,6 +7,7 @@ import trash from '../../assets/images/icons/trash.svg';
 
 import { Link } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
+import ContactsService from '../../services/ContactsService';
 // import Modal from '../../components/Modal';
 
 
@@ -28,13 +29,11 @@ export default function Home() {
   useEffect(() => {
     setIsLoading(true);
 
-    async function loadContacts () {
+    (async function loadContacts () {
       try {
-        const response = await fetch (`http://localhost:3001/contacts?orden=${orderBy}`);
+        const contactList = await ContactsService.listContacts(orderBy);
 
-        const json = await response.json();
-
-        setContacts(json);
+        setContacts(contactList);
 
       } catch (error) {
         console.log({ error: error });
@@ -42,13 +41,9 @@ export default function Home() {
       } finally {
         setIsLoading(false);
 
-      }
+      };
 
-
-
-    }
-
-    loadContacts();
+    })();
 
   }, [orderBy]);
 
