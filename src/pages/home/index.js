@@ -1,12 +1,15 @@
-import { Container, Header, ListContainer, Card, InputSearchContainer } from './styles';
+import { Container, Header, ListContainer, Card, InputSearchContainer, ErrorContainer } from './styles';
+
 import Loader from '../../components/Loader';
+import Button from '../../components/Button';
 
 import arrow from '../../assets/images/icons/arrow.svg';
 import edit from '../../assets/images/icons/edit.svg';
 import trash from '../../assets/images/icons/trash.svg';
+import sad from '../../assets/images/icons/sad.svg';
 
 import { Link } from 'react-router-dom';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import ContactsService from '../../services/ContactsService';
 // import Modal from '../../components/Modal';
 
@@ -16,6 +19,27 @@ export default function Home() {
   const [orderBy, setOrderBy] = useState('asc');
   const [searchTerm, setSearchTerm] = useState('');
   const [isloading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+
+  const loadContacts = useCallback(async () => {
+    try {
+      setIsLoading(true);
+
+      const contactList = await ContactsService.listContacts(orderBy);
+
+      setHasError(false);
+
+      setContacts(contactList);
+
+    } catch {
+      setHasError(true);
+
+    } finally {
+      setIsLoading(false);
+
+    };
+
+  }, [orderBy])
 
   const filteredContacts = useMemo(
     () => contacts.filter(
@@ -27,25 +51,9 @@ export default function Home() {
   );
 
   useEffect(() => {
-    setIsLoading(true);
+    loadContacts();
 
-    (async function loadContacts () {
-      try {
-        const contactList = await ContactsService.listContacts(orderBy);
-
-        setContacts(contactList);
-
-      } catch (error) {
-        console.log(error);
-
-      } finally {
-        setIsLoading(false);
-
-      };
-
-    })();
-
-  }, [orderBy]);
+  }, [loadContacts]);
 
   function handleToggleOrderBy() {
     setOrderBy((prevstate) => prevstate === 'asc' ? 'desc' : 'asc');
@@ -56,6 +64,11 @@ export default function Home() {
     setSearchTerm(event.target.value);
 
   }
+
+  function handleTryAgain() {
+    loadContacts();
+
+  };
 
   return (
     <Container>
@@ -68,18 +81,44 @@ export default function Home() {
 
       </InputSearchContainer>
 
-      <Header>
-        <strong>
-          {filteredContacts.length}
-          {filteredContacts.length === 1 ? ' contato' : ' contatos'}
+      <Header hasError={ hasError } >
+        {
+          !hasError && (
+          <strong>
+            {filteredContacts.length}
+            {filteredContacts.length === 1 ? ' contato' : ' contatos'}
 
-        </strong>
+          </strong>
+
+        )}
 
         <Link to='/new'>Novo contato</Link>
 
       </Header>
 
-      <ListContainer orderby={orderBy}>
+      {hasError && (
+        <ErrorContainer>
+          <img src={sad} alt='sad' />
+
+          <div className='details'>
+            <strong>Ocorreu um erro ao obter os seus contatos!</strong>
+
+            <Button
+              type='button'
+              onClick={ handleTryAgain }
+            >
+              Tentar novamente
+
+            </Button>
+
+          </div>
+
+        </ErrorContainer>
+
+      )}
+
+      {!hasError &&
+        <ListContainer orderby={orderBy}>
         {filteredContacts.length > 0 &&
           <header>
             <button type='button' onClick={ handleToggleOrderBy }>
@@ -122,10 +161,12 @@ export default function Home() {
 
         ))}
 
-      </ListContainer>
+        </ListContainer>
+
+      }
 
     </Container>
 
   );
 
-}
+};
