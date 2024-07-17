@@ -8,7 +8,7 @@ export const Container = styled.div`
 export const Header = styled.header`
   display: flex;
   align-items: center;
-  justify-content: ${ ({ justifyContent }) => justifyContent };
+  justify-content: ${ ({ justifycontent }) => justifycontent };
   margin-top: 32px;
   border-bottom: 2px solid ${({ theme }) => theme.colors.gray[100]};
   padding-bottom: 16px;
@@ -186,6 +186,20 @@ export const EmptyListContainer = styled.div`
       color: ${( { theme } ) => theme.colors.primary.main};
 
     }
+
+  }
+
+`;
+
+export const SearchNotFoundContainer = styled.div`
+  margin-top: 16px;
+  display: flex;
+  align-items: flex-start;
+
+  span {
+    color: ${( { theme } ) => theme.colors.gray[200]};
+    margin-left: 24px;
+    word-break: break-all;
 
   }
 

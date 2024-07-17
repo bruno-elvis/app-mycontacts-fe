@@ -1,4 +1,4 @@
-import { Container, Header, ListContainer, Card, InputSearchContainer, ErrorContainer, EmptyListContainer } from './styles';
+import { Container, Header, ListContainer, Card, InputSearchContainer, ErrorContainer, EmptyListContainer, SearchNotFoundContainer } from './styles';
 
 import Loader from '../../components/Loader';
 import Button from '../../components/Button';
@@ -6,8 +6,9 @@ import Button from '../../components/Button';
 import arrow from '../../assets/images/icons/arrow.svg';
 import edit from '../../assets/images/icons/edit.svg';
 import trash from '../../assets/images/icons/trash.svg';
-import sad from '../../assets/images/icons/sad.svg';
-import emptyBox from '../../assets/images/icons/emptyBox.svg';
+import sad from '../../assets/images/sad.svg';
+import emptyBox from '../../assets/images/emptyBox.svg';
+import magniffierQuestion from '../../assets/images/magniffierQuestion.svg';
 
 import { Link } from 'react-router-dom';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -26,7 +27,7 @@ export default function Home() {
     try {
       setIsLoading(true);
 
-      const contactList = []; await ContactsService.listContacts(orderBy);
+      const contactList = await ContactsService.listContacts(orderBy);
 
       setHasError(false);
 
@@ -82,7 +83,7 @@ export default function Home() {
 
       </InputSearchContainer>
 
-      <Header justifyContent={ (hasError) ? 'flex-end' : (contacts.length > 0) ? 'space-between' : 'center' } >
+      <Header justifycontent={ (hasError) ? 'flex-end' : (contacts.length > 0) ? 'space-between' : 'center' } >
         {
           (!hasError && contacts.length > 0) && (
           <strong>
@@ -122,7 +123,7 @@ export default function Home() {
         <ListContainer orderby={ orderBy } >
           {(contacts.length <= 0 && !isloading) &&
             <EmptyListContainer>
-              <img src={emptyBox} alt='empty'/>
+              <img src={ emptyBox } alt='Empty box'/>
 
               <p>
                 Você ainda não tem nenhum contato cadastrado!
@@ -133,12 +134,21 @@ export default function Home() {
 
           }
 
+          {(contacts.length > 0 && filteredContacts.length < 1 && searchTerm) &&
+            <SearchNotFoundContainer>
+              <img src={ magniffierQuestion } alt='Magniffier question'/>
+
+              <span>Nenhum resultado foi encontrado para <strong>”{ searchTerm }”</strong>.</span>
+
+            </SearchNotFoundContainer>
+
+          }
 
           {filteredContacts.length > 0 &&
             <header>
               <button type='button' onClick={ handleToggleOrderBy }>
                 <span>Nome</span>
-                <img src={arrow} alt='sort arrow' />
+                <img src={arrow} alt='Sort arrow' />
 
               </button>
 

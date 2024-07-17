@@ -51,7 +51,9 @@
     "react/no-deprecated": "off",
 
     "react-hooks/rules-of-hooks": "error",
-    "react-hooks/exhaustive-deps": "warn"
+    "react-hooks/exhaustive-deps": "warn",
+
+    "no-empty": ["error", { "allowEmptyCatch": true }]
 
     //"@stylistic/indent": ["error", 2]
 

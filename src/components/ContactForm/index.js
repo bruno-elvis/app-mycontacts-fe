@@ -10,7 +10,9 @@ import Button from '../Button';
 
 import { Form, ButtonContainer } from './styles';
 
-import { useState } from 'react';
+import CategoriesService from '../../services/CategoriesService';
+
+import { useEffect, useState } from 'react';
 
 import useErrors from '../../hooks/useErrors';
 
@@ -18,11 +20,31 @@ export default function ContactForm({ buttonLabel }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [category, setCategory] = useState('');
+  const [categoryId, setCategoryId] = useState('');
+  const [categories, setCategories] = useState([]);
+  const [categoriesIsLoading, setCategoriesIsLoading] = useState(false);
 
   const { errors, setError, removeError, getErrorMessageByFieldName } = useErrors();
 
   const isFormValid = (name && errors.length === 0);
+
+  useEffect(() => {
+    (
+      async function loadCategories() {
+        try {
+          setCategoriesIsLoading(true);
+
+          const listCategories = await CategoriesService.listCategories();
+
+          setCategories(listCategories);
+
+        } catch {} finally { setCategoriesIsLoading(false) };
+
+      }
+
+    )();
+
+  }, []);
 
   function handleNameChange(e) {
     const inputValue = e.target.value;
@@ -65,7 +87,7 @@ export default function ContactForm({ buttonLabel }) {
     e.preventDefault();
 
     console.log({
-      name, email, phone, category
+      name, email, phone, category: categoryId
 
     });
 
@@ -74,7 +96,7 @@ export default function ContactForm({ buttonLabel }) {
   return (
     <>
       <Form onSubmit={ handleSubmit } noValidate>
-        <FormGroup error={ getErrorMessageByFieldName({ fieldName: 'name'}) }>
+        <FormGroup error={ getErrorMessageByFieldName({ fieldName: 'name'}) } >
           <Input
             placeholder='Nome *'
             value={ name }
@@ -83,7 +105,7 @@ export default function ContactForm({ buttonLabel }) {
 
         </FormGroup>
 
-        <FormGroup error={ getErrorMessageByFieldName({ fieldName: 'email'}) }>
+        <FormGroup error={ getErrorMessageByFieldName({ fieldName: 'email'}) } >
           <Input
             type='email'
             value={ email }
@@ -102,14 +124,14 @@ export default function ContactForm({ buttonLabel }) {
 
         </FormGroup>
 
-        <FormGroup>
+        <FormGroup isloading={ categoriesIsLoading } >
           <Select
-            onChange={ e => setCategory(e.target.value) }
-            value={ category } >
-            <option value=''>Categoria</option>
-            <option value='linkedin'>LinkedIn</option>
-            <option value='instagram'>Instagram</option>
-            <option value='facebook'>Facebook</option>
+            onChange={ e => setCategoryId(e.target.value) }
+            value={ categoryId }
+            disabled={ categoriesIsLoading } >
+            <option value=''>Sem Categoria</option>
+
+            { categories.map(category => <option key={ category.id } value={ category.id }>{ category.name }</option>) }
 
           </Select>
 
