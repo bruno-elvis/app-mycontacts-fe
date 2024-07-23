@@ -7,6 +7,7 @@ export default {
       light: '#6674f4',
       main: '#5061FC',
       dark: '#3346f0',
+      success: '#51CA73'
 
     },
 

@@ -10,9 +10,7 @@ export default function NewContact() {
     };
 
     try {
-      const response = await ContactsService.createContact(contact);
-
-      console.log(response);
+      await ContactsService.createContact(contact);
 
     } catch (error) { console.log(error); }
 
