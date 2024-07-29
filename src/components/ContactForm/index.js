@@ -12,12 +12,12 @@ import { Form, ButtonContainer } from './styles';
 
 import CategoriesService from '../../services/CategoriesService';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
 
 import useErrors from '../../hooks/useErrors';
 
 
-export default function ContactForm({ buttonLabel, onSubmit }) {
+const ContactForm = forwardRef(({ buttonLabel, onSubmit }, ref) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -29,6 +29,17 @@ export default function ContactForm({ buttonLabel, onSubmit }) {
   const { errors, setError, removeError, getErrorMessageByFieldName } = useErrors();
 
   const isFormValid = (name && errors.length === 0);
+
+  useImperativeHandle(ref, () => ({
+    setFieldsValues: (contact) => {
+      setName(contact.name ?? '');
+      setEmail(contact.email ?? '');
+      setPhone(contact.phone ?? '');
+      setCategoryId(contact.category_id ?? '');
+
+    }
+
+  }), []);
 
   useEffect(() => {
     (
@@ -158,10 +169,14 @@ export default function ContactForm({ buttonLabel, onSubmit }) {
     </>
   );
 
-};
+}, []);
+
+ContactForm.displayName = 'ContactForm';
 
 ContactForm.propTypes = {
   buttonLabel: PropTypes.string.isRequired,
   onSubmit: PropTypes.func.isRequired
 
 };
+
+export default ContactForm;

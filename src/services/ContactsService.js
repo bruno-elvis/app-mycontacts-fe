@@ -6,13 +6,23 @@ class ContactsService {
 
   };
 
-  async listContacts (orderBy = 'asc') {
+  listContacts (orderBy = 'asc') {
     return this.httpClient.get(`/contacts?orden=${orderBy}`);
 
   };
 
-  async createContact (contact) {
+  getContactById(id) {
+    return this.httpClient.get(`/contacts/${id}`);
+
+  };
+
+  createContact (contact) {
     return this.httpClient.post('/contacts', contact);
+
+  };
+
+  updateContact (id, contact) {
+    return this.httpClient.put(`/contacts/${id}`, contact);
 
   };
 

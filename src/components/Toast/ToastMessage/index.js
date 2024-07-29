@@ -45,7 +45,7 @@ ToastMessage.propTypes = {
     text: PropTypes.string.isRequired,
     type: PropTypes.oneOf(['default', 'success', 'danger']),
     duration: PropTypes.number
-  }),
+  }).isRequired,
   onRemoveMessage: PropTypes.func.isRequired
 
 };
