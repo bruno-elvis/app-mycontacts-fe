@@ -6,7 +6,7 @@ class ContactsService {
 
   };
 
-  listContacts (orderBy = 'asc') {
+  listContacts(orderBy = 'asc') {
     return this.httpClient.get(`/contacts?orden=${orderBy}`);
 
   };
@@ -16,13 +16,18 @@ class ContactsService {
 
   };
 
-  createContact (contact) {
+  createContact(contact) {
     return this.httpClient.post('/contacts', contact);
 
   };
 
-  updateContact (id, contact) {
+  updateContact(id, contact) {
     return this.httpClient.put(`/contacts/${id}`, contact);
+
+  };
+
+  deleteContact(id) {
+    return this.httpClient.delete(`/contacts/${id}`);
 
   };
 

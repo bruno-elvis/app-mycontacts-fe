@@ -2,6 +2,7 @@ import { Container, Header, ListContainer, Card, InputSearchContainer, ErrorCont
 
 import Loader from '../../components/Loader';
 import Button from '../../components/Button';
+import Modal from '../../components/Modal';
 
 import arrow from '../../assets/images/icons/arrow.svg';
 import edit from '../../assets/images/icons/edit.svg';
@@ -12,8 +13,9 @@ import magniffierQuestion from '../../assets/images/magniffierQuestion.svg';
 
 import { Link } from 'react-router-dom';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+
 import ContactsService from '../../services/ContactsService';
-// import Modal from '../../components/Modal';
+import Toast from '../../utils/toast';
 
 
 export default function Home() {
@@ -22,6 +24,9 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
   const [isloading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const [contactBeingDelected, setContactBeingDelected] = useState(null);
+  const [isLoadingDelete, setIsLoadingDelete] = useState(false);
 
   const loadContacts = useCallback(async () => {
     try {
@@ -72,11 +77,58 @@ export default function Home() {
 
   };
 
+  function handleDeleteContact(contact) {
+    setIsDeleteModalVisible(true);
+    setContactBeingDelected(contact);
+
+  };
+
+  function handleCancelDeleteModal() {
+    setIsDeleteModalVisible(false);
+    setContactBeingDelected(null);
+
+  };
+
+  async function handleConfirmDeleteContact() {
+    try {
+      const id = contactBeingDelected.id;
+
+      setIsLoadingDelete(true);
+
+      await ContactsService.deleteContact(id);
+
+      handleCancelDeleteModal();
+
+      setContacts(contacts.filter(contact => contact.id !== id));
+
+      Toast({ text: 'Contato removido com sucesso!', type: 'success' });
+
+    } catch {
+      Toast({ text: 'Ocorreu um erro ao tentar remover o contato!', type: 'danger' });
+
+    } finally {
+      setIsLoadingDelete(false);
+
+    };
+
+  };
+
+
   return (
     <Container>
       <Loader isloading={ isloading }/>
 
-      {/* <Modal title={'Teste modal'} body={'Texto de texte para o corpo do modal'} textButton='Deletar' danger/> */}
+      <Modal
+        visible={ isDeleteModalVisible }
+        title={`Tem certeza que deseja remover o contato "${contactBeingDelected?.name}"?`}
+        confirmLabel='Deletar'
+        danger
+        onConfirm={ handleConfirmDeleteContact }
+        onCancel={ handleCancelDeleteModal }
+        isLoading={ isLoadingDelete } >
+          <p>Esta ação não poderá ser desfeita!</p>
+
+      </Modal>
 
       <InputSearchContainer>
         <input value={ searchTerm } type='text' placeholder='Pesquise pelo nome' onChange={ handleChangeSearchTerm }/>
@@ -157,27 +209,28 @@ export default function Home() {
           }
 
           {filteredContacts.map(contact => (
-            <Card key={contact.id}>
+            <Card key={ contact.id }>
               <div className='info'>
                 <div className='contact-name'>
-                  <strong>{contact.name}</strong>
+                  <strong>{ contact.name }</strong>
 
-                  {contact.category && <small>{contact.category}</small>}
+                  { contact.category && <small>{ contact.category }</small> }
 
                 </div>
 
-                <span>{contact.email}</span>
-                <span>{contact.phone}</span>
+                <span>{ contact.email }</span>
+                <span>{ contact.phone }</span>
 
               </div>
 
               <div className='actions'>
                 <Link to={`/edit/${contact.id}`}>
-                  <img src={edit} alt='Edit'/>
+                  <img src={ edit } alt='Edit'/>
+
                 </Link>
 
-                <button type='button'>
-                  <img src={trash} alt='Delete'/>
+                <button type='button' onClick={ () => handleDeleteContact(contact) }>
+                  <img src={ trash } alt='Delete'/>
 
                 </button>
 
