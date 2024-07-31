@@ -1,10 +1,10 @@
-import { createPortal } from 'react-dom';
-
-import PropTypes from 'prop-types';
-
 import { Container, Overlay, Footer } from './styles';
 
 import Button from '../Button';
+import ReactPortal from '../ReactPortal';
+
+import PropTypes from 'prop-types';
+
 
 export default function Modal({ title,
                                 danger = false,
@@ -19,46 +19,44 @@ export default function Modal({ title,
                               }) {
   if(!visible) return null;
 
-  return createPortal(
-    <Overlay>
-        <Container danger={ danger }>
-          <h1>
-           { title }
+  return <ReactPortal containerId='modal-root'>
+            <Overlay>
+              <Container danger={ danger }>
+                <h1>
+                { title }
 
-          </h1>
+                </h1>
 
-          <div className='modal-body'>{ children }</div>
+                <div className='modal-body'>{ children }</div>
 
-          <Footer>
-            <button
-              type='button'
-              className='cancel-button'
-              onClick={ onCancel }
-              disabled={ isLoading }>
+                <Footer>
+                  <button
+                    type='button'
+                    className='cancel-button'
+                    onClick={ onCancel }
+                    disabled={ isLoading }>
 
-                { cancelLabel }
+                      { cancelLabel }
 
-            </button>
+                  </button>
 
-            <Button
-              type='button'
-              danger={ danger }
-              onClick={ onConfirm }
-              isLoading={ isLoading } >
+                  <Button
+                    type='button'
+                    danger={ danger }
+                    onClick={ onConfirm }
+                    isLoading={ isLoading } >
 
-                { confirmLabel }
+                      { confirmLabel }
 
-            </Button>
+                  </Button>
 
-          </Footer>
+                </Footer>
 
-        </Container>
+              </Container>
 
-      </Overlay>,
+            </Overlay>
 
-      document.getElementById('modal-root')
-
-  );
+          </ReactPortal>
 
 };
 

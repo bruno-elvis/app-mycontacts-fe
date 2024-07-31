@@ -50,7 +50,7 @@ export const Footer = styled.footer`
     margin-right: 24px;
     font-size: 16px;
     color: ${({ theme }) => theme.colors.gray[200]};
-    cursor: default;
+    cursor: pointer;
 
   }
 
