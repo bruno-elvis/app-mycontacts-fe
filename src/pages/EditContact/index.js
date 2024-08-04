@@ -6,8 +6,9 @@ import ContactForm from '../../components/ContactForm';
 import Loader from '../../components/Loader';
 
 import ContactsService from '../../services/ContactsService';
-import Toast from '../../utils/toast';
 import useSafeAsyncAction from '../../hooks/useSafeAsyncAction';
+
+import Toast from '../../utils/toast';
 
 
 export default function EditContact() {
@@ -18,12 +19,7 @@ export default function EditContact() {
   const contactFormRef = useRef(null);
   const safeAsyncAction = useSafeAsyncAction();
 
-  async function handleSubmit(formData) {
-    const contact = {
-      name: formData.name, email: formData.email, phone: formData.phone, category_id: formData.categoryId
-
-    };
-
+  async function handleSubmit(contact) {
     try {
       const updatedContact = await ContactsService.updateContact(id, contact);
 

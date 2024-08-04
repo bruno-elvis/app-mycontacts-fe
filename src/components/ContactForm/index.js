@@ -1,3 +1,4 @@
+import { useEffect, useState, forwardRef, useImperativeHandle, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 import isEmailValid from '../../utils/isEmailValid';
@@ -12,8 +13,6 @@ import { Form, ButtonContainer } from './styles';
 
 import CategoriesService from '../../services/CategoriesService';
 
-import { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
-
 import useErrors from '../../hooks/useErrors';
 
 
@@ -25,6 +24,7 @@ const ContactForm = forwardRef(({ buttonLabel, onSubmit }, ref) => {
   const [categories, setCategories] = useState([]);
   const [categoriesIsLoading, setCategoriesIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const inputNameRef = useRef(null);
 
   const { errors, setError, removeError, getErrorMessageByFieldName } = useErrors();
 
@@ -35,17 +35,19 @@ const ContactForm = forwardRef(({ buttonLabel, onSubmit }, ref) => {
       setName(contact.name ?? '');
       setEmail(contact.email ?? '');
       setPhone(contact.phone ?? '');
-      setCategoryId(contact.category_id ?? '');
+      setCategoryId(contact.category.id ?? '');
 
     },
 
-    resetFields(){
+    resetFields() {
       setName('');
       setEmail('');
       setPhone('');
       setCategoryId('');
 
-    }
+    },
+
+    setInputNameFocus
 
   }), []);
 
@@ -113,13 +115,22 @@ const ContactForm = forwardRef(({ buttonLabel, onSubmit }, ref) => {
 
     setIsSubmitting(false);
 
+    setInputNameFocus();
+
   };
+
+  function setInputNameFocus() {
+    inputNameRef.current.focus();
+
+  }
+
 
   return (
     <>
       <Form onSubmit={ handleSubmit } noValidate>
         <FormGroup error={ getErrorMessageByFieldName({ fieldName: 'name'}) } >
           <Input
+            ref={ inputNameRef }
             placeholder='Nome *'
             value={ name }
             onChange={ handleNameChange }
@@ -154,6 +165,7 @@ const ContactForm = forwardRef(({ buttonLabel, onSubmit }, ref) => {
             onChange={ e => setCategoryId(e.target.value) }
             value={ categoryId }
             disabled={ categoriesIsLoading || isSubmitting } >
+
             <option value=''>Sem Categoria</option>
 
             { categories.map(category => <option key={ category.id } value={ category.id }>{ category.name }</option>) }
