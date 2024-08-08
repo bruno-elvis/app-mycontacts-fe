@@ -1,4 +1,18 @@
-import { styled } from 'styled-components';
+import { styled, keyframes, css } from 'styled-components';
+
+
+const fadeIn = keyframes`
+  from { opacity: 0; };
+  to { opacity: 1; };
+
+`;
+
+const fadeOut = keyframes`
+  from { opacity: 1; };
+  to { opacity: 0; };
+
+`;
+
 
 export const Overlay = styled.div`
   width: 100%;
@@ -10,5 +24,8 @@ export const Overlay = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  animation: ${ fadeIn } 0.25s;
+
+  ${({ isleaving }) => isleaving && css`animation: ${ fadeOut } 0.25s;`};
 
 `;

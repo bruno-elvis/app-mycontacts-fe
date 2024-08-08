@@ -120,7 +120,7 @@ export default function Home() {
 
       <Modal
         visible={ isDeleteModalVisible }
-        title={`Tem certeza que deseja remover o contato "${contactBeingDelected?.name}"?`}
+        title={`Tem certeza que deseja remover o contato "${ contactBeingDelected?.name }"?`}
         confirmLabel='Deletar'
         danger
         onConfirm={ handleConfirmDeleteContact }

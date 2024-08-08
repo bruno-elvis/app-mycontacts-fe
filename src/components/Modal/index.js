@@ -4,6 +4,7 @@ import Button from '../Button';
 import ReactPortal from '../ReactPortal';
 
 import PropTypes from 'prop-types';
+import useAnimatedUnmount from '../../hooks/useAnimatedUnmount';
 
 
 export default function Modal({ title,
@@ -17,11 +18,15 @@ export default function Modal({ title,
                                 isLoading = false
 
                               }) {
-  if(!visible) return null;
+
+  const { animatedElementRef, shouldRender } = useAnimatedUnmount(visible);
+
+  if(!shouldRender) return null;
+
 
   return <ReactPortal containerId='modal-root'>
-            <Overlay>
-              <Container danger={ danger }>
+            <Overlay ref={ animatedElementRef } isleaving={ !visible } >
+              <Container danger={ danger } >
                 <h1>
                 { title }
 
