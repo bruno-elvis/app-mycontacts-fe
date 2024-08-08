@@ -12,7 +12,7 @@ import emptyBox from '../../assets/images/emptyBox.svg';
 import magniffierQuestion from '../../assets/images/magniffierQuestion.svg';
 
 import { Link } from 'react-router-dom';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState, useDeferredValue } from 'react';
 
 import ContactsService from '../../services/ContactsService';
 import Toast from '../../utils/toast';
@@ -21,12 +21,14 @@ import Toast from '../../utils/toast';
 export default function Home() {
   const [contacts, setContacts] = useState([]);
   const [orderBy, setOrderBy] = useState('asc');
-  const [searchTerm, setSearchTerm] = useState('');
   const [isloading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [contactBeingDelected, setContactBeingDelected] = useState(null);
   const [isLoadingDelete, setIsLoadingDelete] = useState(false);
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const deferredSearchTerm = useDeferredValue(searchTerm);
 
   const loadContacts = useCallback(async () => {
     try {
@@ -50,10 +52,10 @@ export default function Home() {
 
   const filteredContacts = useMemo(
     () => contacts.filter(
-      contact => contact.name.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
+      contact => contact.name.toLocaleLowerCase().includes(deferredSearchTerm.toLocaleLowerCase())
     ),
 
-    [contacts, searchTerm]
+    [contacts, deferredSearchTerm]
 
   );
 
@@ -62,44 +64,43 @@ export default function Home() {
 
   }, [loadContacts]);
 
-  function handleToggleOrderBy() {
+  const handleToggleOrderBy = useCallback(() => {
     setOrderBy((prevstate) => prevstate === 'asc' ? 'desc' : 'asc');
 
-  }
+  }, []);
 
   function handleChangeSearchTerm(event) {
     setSearchTerm(event.target.value);
 
-  }
+  };
 
   function handleTryAgain() {
     loadContacts();
 
   };
 
-  function handleDeleteContact(contact) {
+  const handleDeleteContact = useCallback((contact) => {
     setIsDeleteModalVisible(true);
     setContactBeingDelected(contact);
 
-  };
+  }, []);
 
   function handleCancelDeleteModal() {
     setIsDeleteModalVisible(false);
-    setContactBeingDelected(null);
 
   };
 
   async function handleConfirmDeleteContact() {
     try {
-      const id = contactBeingDelected.id;
-
       setIsLoadingDelete(true);
+
+      const id = contactBeingDelected.id;
 
       await ContactsService.deleteContact(id);
 
-      handleCancelDeleteModal();
-
       setContacts(contacts.filter(contact => contact.id !== id));
+
+      setIsDeleteModalVisible(false);
 
       Toast({ text: 'Contato removido com sucesso!', type: 'success' });
 
